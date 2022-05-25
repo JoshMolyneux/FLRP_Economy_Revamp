@@ -19,6 +19,8 @@ Author:
 
 import mariadb
 import sys
+from items import ITEM_DICT
+
 
 # Global variables for our requirements
 INVENTORY_REFUND_PERCENTAGE = 60

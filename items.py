@@ -1,3 +1,14 @@
+OMIT_ITEMS = [
+    'valentinespresent2022',
+    'aprilfools2022',
+    'christmaspresent',
+    'easterpresent2022',
+    'Trabbi',
+    'jagetype',
+    'dodgecharge2008',
+    'bmwgtr_legacy'
+]
+
 ITEM_DICT = {
     'accessory_silverwatch': 500000,
     'accessory_diamondwatch': 400000,

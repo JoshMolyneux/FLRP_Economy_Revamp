@@ -1,15 +1,16 @@
 OMIT_ITEMS = [
-    'valentinespresent2022',
-    'aprilfools2022',
-    'christmaspresent',
-    'easterpresent2022',
     'Trabbi',
     'jagetype',
     'dodgecharge2008',
-    'bmwgtr_legacy'
+    'bmwgtr_legacy',
+    'bmwgtr'
 ]
 
 ITEM_DICT = {
+    'valentinespresent2022': 250,
+    'aprilfools2022': 250,
+    'christmaspresent': 250,
+    'easterpresent2022': 250,
     'accessory_silverwatch': 500000,
     'accessory_diamondwatch': 400000,
     'accessory_necklace': 250000,
@@ -334,7 +335,7 @@ ITEM_DICT = {
     'wheel': 100,
     'limousine': 2000000,
     #CHECK 'bmwgtr_legacy': 1000000,
-    'bmwgtr': 1000000,
+    #CHECK 'bmwgtr': 1000000,
     'mclaren': 1000000,
     'teslamodels': 650000,
     'rroyce': 600000,

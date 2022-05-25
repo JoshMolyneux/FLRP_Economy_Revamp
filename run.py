@@ -123,7 +123,7 @@ for row in result:
     refund = int(math.ceil(refund * INVENTORY_REFUND_PERCENTAGE))
 
     log_file_percentage_decrease.write(
-        f"New Wallet (After % Decrease on inventory value): {money+refund}\n\n"
+        f"Phase 1 Wallet (After % Decrease on inventory value): {money+refund}\n\n"
     )
 
     cursor = connect.cursor()
@@ -143,7 +143,7 @@ print("\n[!]PHASE 1 REFUND SUCCESSFULLY EXECUTED[!]")
 
 
 """
-PHASE 2: Decrease wallets using a tax bracket system as follows when the player has.
+PHASE 2: Decrease wallets using a tax bracket system as follows when the player has:
     - Up to $199,999: 0% Decrease
     - Between $200,000 and $499,999: 50% Decrease
     - Between $500,000 and $749,999: 55% Decrease
@@ -152,4 +152,70 @@ PHASE 2: Decrease wallets using a tax bracket system as follows when the player 
     - $5,000,000 or more: 70% Decrease
 """
 
-input("Please press 'ENTER' to begin PHASE 2 deductions")
+input("Please press 'ENTER' to begin PHASE 2 tax deductions")
+
+cursor = connect.cursor()
+try:
+    cursor.execute("SELECT _Key, _SteamID, _Money FROM players")
+    # Store all the results in a variable
+    result = cursor.fetchall()
+except mariadb.error as e:
+    print(f"Error: {e}")
+
+ROW_COUNT = cursor.rowcount
+COUNTER = 0
+cursor.close()
+
+log_file_tax_bracket = open(
+    "PHASE_2_tax_log.txt", "a", encoding="utf-8"
+)
+
+for row in result:
+    key = row[0]
+    steamid = row[1]
+    money = 51351231231
+    tax = 0
+    tax_pool = 0
+
+    log_file_tax_bracket.write(
+        f"ID: {key} \nSteamID: {steamid} \nPhase 1 Wallet: {money}\n"
+    )
+
+    if money <= 199999:
+        log_file_tax_bracket.write(
+            f"[!]NOT ENOUGH TO BE TAXED[!]\n\n"
+        )
+        continue
+    elif money <= 499999:
+        tax = 0.5   # 50%
+        tax_pool = (money - 199999) * tax
+    elif money <= 749999:
+        tax = 0.45  # 55%
+        tax_pool = (money - 499999) * tax
+    elif money <= 999999:
+        tax = 0.4  # 60%
+        tax_pool = (money - 749999) * tax
+    elif money <= 1000000:
+        tax = 0.35  # 65%
+        tax_pool = (money - 999999) * tax
+    else:
+        tax = 0.3  # 70%
+        tax_pool = (money - 1000000) * tax
+
+    money = money - tax_pool
+
+    log_file_tax_bracket.write(
+        f"Taxed: ${tax_pool}\nPhase 2 Wallet: ${int(money)}\n\n"
+    )
+
+    cursor = connect.cursor()
+    try:
+        cursor.execute(
+            f"UPDATE players SET _Money = {int(money)} WHERE _Key = {key}"
+        )
+    except mariadb.Error as e:
+        print(f"Error: {e}")
+    break
+    COUNTER += 1
+    # Some visual feedback in console
+    print(COUNTER, "of", ROW_COUNT, "taxed!")

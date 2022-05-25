@@ -15,3 +15,24 @@ Usage:
 Author:
     Joshua Molyneux - 05-2022
 """
+
+import mariadb
+import sys
+
+SQL_HOST = 'localhost'
+SQL_PORT = "3306"
+SQL_USER = 'root'
+SQL_PASSWORD = ''
+SQL_DATABASE = 'fearless_cityrp'
+
+try:
+    connect = mariadb.connect(
+        user=SQL_USER,
+        password=SQL_PASSWORD,
+        host=SQL_HOST,
+        port=SQL_PORT,
+        database=SQL_DATABASE
+    )
+except mariadb.Error as e:
+    print(f"There was an error connecting to MariaDB: {e}")
+    sys.exit(1)

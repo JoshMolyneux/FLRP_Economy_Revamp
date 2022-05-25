@@ -1,7 +1,6 @@
 """Automates queries sent to the database to complete the following:
 - Refund all inventory items (except legacy) at 60% market value.
 - Decrease wallets using a tax bracket system as follows when the player has.
-  For the sake of the script, we'll give them names:
     - Up to $199,999: 0% Decrease
     - Between $200,000 and $499,999: 50% Decrease
     - Between $500,000 and $749,999: 55% Decrease
@@ -51,10 +50,10 @@ except mariadb.Error as e:
 
 
 """
-Refund all inventory items at 60% market value
+PHASE 1: Refund all inventory items (except legacy) at 60% market value.
 """
 
-input("Please press 'ENTER' to begin Phase 1 refunds")
+input("Please press 'ENTER' to begin PHASE 1 refunds")
 
 cursor = connect.cursor()
 try:
@@ -69,7 +68,7 @@ COUNTER = 0
 cursor.close()
 # Append to a file - and/or create it if it doesn't exist
 log_file_percentage_decrease = open(
-    "percentage_decrease_log.txt", "a", encoding="utf-8"
+    "PHASE_1_refund_log.txt", "a", encoding="utf-8"
 )
 
 # Loop through all the rows of players
@@ -144,5 +143,13 @@ print("\n[!]PHASE 1 REFUND SUCCESSFULLY EXECUTED[!]")
 
 
 """
-Decrease wallets using a tax bracket system
+PHASE 2: Decrease wallets using a tax bracket system as follows when the player has.
+    - Up to $199,999: 0% Decrease
+    - Between $200,000 and $499,999: 50% Decrease
+    - Between $500,000 and $749,999: 55% Decrease
+    - Between $750,000 and $999,999: 60% Decrease
+    - Between $1,000,000 and $4,999,999: 65% Decrease
+    - $5,000,000 or more: 70% Decrease
 """
+
+input("Please press 'ENTER' to begin PHASE 2 deductions")

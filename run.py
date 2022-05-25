@@ -20,9 +20,11 @@ Author:
 import mariadb
 import sys
 
+# Global variables for our requirements
 INVENTORY_REFUND_PERCENTAGE = 60
 DESCALE_VALUE = 5
 
+# MaraDB Database Details - CHANGE WHERE NECCESSARY
 SQL_HOST = 'localhost'
 SQL_PORT = 3306
 SQL_USER = 'root'
@@ -47,7 +49,7 @@ Refund all inventory items at 60% market value
 """
 cursor = connect.cursor()
 
-cursor.execute("SELECT _Key, _Name, _SteamID FROM players")
+cursor.execute("SELECT _Key, _Name, _SteamID, _Inventory FROM players")
 file = open("econ_refund_log.txt", "a", encoding="utf-8")
-for (key, name, steamid) in cursor:
+for (key, name, steamid, inventory) in cursor:
     file.write(f"ID: {key}\nName: {name} \nSteamID: {steamid} \n\n")

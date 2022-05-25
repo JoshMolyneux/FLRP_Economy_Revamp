@@ -1,6 +1,7 @@
 """Automates queries sent to the database to complete the following:
 - Refund all inventory items at 60% market value.
-- Decrease wallets using a tax bracket system as follows when the player has:
+- Decrease wallets using a tax bracket system as follows when the player has.
+  For the sake of the script, we'll give them names:
     - Up to $199,999: 0% Decrease
     - Between $200,000 and $499,999: 50% Decrease
     - Between $500,000 and $749,999: 55% Decrease
@@ -19,8 +20,11 @@ Author:
 import mariadb
 import sys
 
+INVENTORY_REFUND_PERCENTAGE = 60
+DESCALE_VALUE = 5
+
 SQL_HOST = 'localhost'
-SQL_PORT = "3306"
+SQL_PORT = 3306
 SQL_USER = 'root'
 SQL_PASSWORD = ''
 SQL_DATABASE = 'fearless_cityrp'
@@ -36,3 +40,14 @@ try:
 except mariadb.Error as e:
     print(f"There was an error connecting to MariaDB: {e}")
     sys.exit(1)
+
+
+"""
+Refund all inventory items at 60% market value
+"""
+cursor = connect.cursor()
+
+cursor.execute("SELECT _Key, _Name, _SteamID FROM players")
+file = open("econ_refund_log.txt", "a", encoding="utf-8")
+for (key, name, steamid) in cursor:
+    file.write(f"ID: {key}\nName: {name} \nSteamID: {steamid} \n\n")

@@ -1,5 +1,5 @@
 """Automates queries sent to the database to complete the following:
-- Refund all inventory items at 60% market value.
+- Refund all inventory items (except legacy) at 60% market value.
 - Decrease wallets using a tax bracket system as follows when the player has.
   For the sake of the script, we'll give them names:
     - Up to $199,999: 0% Decrease
@@ -52,6 +52,6 @@ Refund all inventory items at 60% market value
 cursor = connect.cursor()
 
 cursor.execute("SELECT _Key, _Name, _SteamID, _Inventory FROM players")
-file = open("econ_refund_log.txt", "a", encoding="utf-8")
+before_file = open("BEFORE_econ_refund_log.txt", "a", encoding="utf-8")
 for (key, name, steamid, inventory) in cursor:
-    file.write(f"ID: {key}\nName: {name} \nSteamID: {steamid} \n\n")
+    before_file.write(f"ID: {key}\nName: {name} \nSteamID: {steamid} \n\n")

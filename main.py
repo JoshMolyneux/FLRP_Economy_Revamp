@@ -26,7 +26,7 @@ from phase3 import phase3
 
 
 # Global variables for our requirements
-INVENTORY_REFUND_PERCENTAGE = 0.4  # 60% DECREASE
+INVENTORY_REFUND_PERCENTAGE = 0.6  # 40% DECREASE
 DESCALE_VALUE = 3
 
 # MariaDB Database Details - CHANGE WHERE NECCESSARY

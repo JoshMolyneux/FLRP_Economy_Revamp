@@ -10,7 +10,7 @@
 - PHASE 3 Descale wallets by a fixed number
 
 Usage:
-    ./run.py
+    ./main.py
 
 Author:
     Joshua Molyneux - 05-2022
@@ -71,11 +71,11 @@ try:
     result = cursor.fetchall()
 except mariadb.error as e:
     print(f"Error: {e}")
-cursor.close()
 
 # Going to use these for visual feedback
 ROW_COUNT = cursor.rowcount
 COUNTER = 0
+cursor.close()
 
 # Append to a file - and/or create it if it doesn't exist
 log_file_percentage_decrease = open(
@@ -172,10 +172,9 @@ try:
     result = cursor.fetchall()
 except mariadb.error as e:
     print(f"Error: {e}")
-cursor.close()
 
-ROW_COUNT = cursor.rowcount
 COUNTER = 0
+cursor.close()
 
 log_file_tax_bracket = open(
     "PHASE_2_tax_log.txt", "a", encoding="utf-8"
@@ -249,7 +248,6 @@ except mariadb.error as e:
     print(f"Error: {e}")
 cursor.close()
 
-ROW_COUNT = cursor.rowcount
 COUNTER = 0
 
 log_file_descale = open(

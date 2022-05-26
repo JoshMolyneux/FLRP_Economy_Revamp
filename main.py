@@ -57,7 +57,6 @@ except mariadb.error as e:
     print(f"Error: {e}")
 cursor.close()
 
-
 """
 PHASE 1: Refund all inventory items (except legacy) at 60% market value.
 """
@@ -275,7 +274,7 @@ for row in result:
     money = money / DESCALE_VALUE
 
     log_file_descale.write(
-        f"Phase 3 Wallet: ${money}\n\n"
+        f"Phase 3 Wallet: ${int(money)}\n\n"
     )
 
     cursor = connect.cursor()
@@ -302,7 +301,14 @@ except mariadb.error as e:
     print(f"Error: {e}")
 cursor.close()
 
-total = TOTAL_CASH_START - TOTAL_CASH_END
+cursor = connect.cursor()
+try:
+    cursor.execute("UPDATE players SET _Invvalue = 0")
+except mariadb.error as e:
+    print(f"Error: {e}")
+cursor.close()
+
+total = int(TOTAL_CASH_START[0]) - int(TOTAL_CASH_END[0])
 
 print(f"\n\n Total money removed: ${total}")
 connect.close()

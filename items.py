@@ -1,3 +1,5 @@
+# IF ADDING TO 'OMIT_ITEMS', BE SURE TO COMMENT/REMOVE IT FROM 'ITEM_DICT'
+
 OMIT_ITEMS = [
     'Trabbi',
     'jagetype',

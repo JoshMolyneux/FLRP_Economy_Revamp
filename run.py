@@ -79,7 +79,7 @@ for row in result:
     money = row[3]
 
     log_file_percentage_decrease.write(
-        f"ID: {key} \nSteamID: {steamid} \nOld Wallet: {money}\n"
+        f"ID: {key} \nSteamID: {steamid} \nOld Wallet: ${money}\n"
     )
 
     # If the inventory is empty, go to the next iteration of the loop
@@ -117,13 +117,13 @@ for row in result:
         inv_edited = ""
 
     log_file_percentage_decrease.write(
-        f"New Wallet (Wallet + Inventory): {money+refund}\n"
+        f"New Wallet (Wallet + Inventory): ${money+refund}\n"
     )
 
     refund = int(math.ceil(refund * INVENTORY_REFUND_PERCENTAGE))
 
     log_file_percentage_decrease.write(
-        f"Phase 1 Wallet (After % Decrease on inventory value): {money+refund}\n\n"
+        f"Phase 1 Wallet (After % Decrease on inventory value): ${money+refund}\n\n"
     )
 
     cursor = connect.cursor()
@@ -173,9 +173,9 @@ log_file_tax_bracket = open(
 for row in result:
     key = row[0]
     steamid = row[1]
-    money = 51351231231
+    money = row[2]
     tax = 0
-    tax_pool = 0
+    pool = 0
 
     log_file_tax_bracket.write(
         f"ID: {key} \nSteamID: {steamid} \nPhase 1 Wallet: {money}\n"
@@ -188,24 +188,23 @@ for row in result:
         continue
     elif money <= 499999:
         tax = 0.5   # 50%
-        tax_pool = (money - 199999) * tax
+        pool = (money - 199999) * tax
     elif money <= 749999:
         tax = 0.45  # 55%
-        tax_pool = (money - 499999) * tax
+        pool = (money - 499999) * tax
     elif money <= 999999:
         tax = 0.4  # 60%
-        tax_pool = (money - 749999) * tax
+        pool = (money - 749999) * tax
     elif money <= 1000000:
         tax = 0.35  # 65%
-        tax_pool = (money - 999999) * tax
+        pool = (money - 999999) * tax
     else:
         tax = 0.3  # 70%
-        tax_pool = (money - 1000000) * tax
+        pool = (money - 1000000) * tax
 
-    money = money - tax_pool
-
+    money = money - pool
     log_file_tax_bracket.write(
-        f"Taxed: ${tax_pool}\nPhase 2 Wallet: ${int(money)}\n\n"
+        f"Money Removed: ${money}\nPhase 2 Wallet: ${int(pool)}\n\n"
     )
 
     cursor = connect.cursor()

@@ -1,5 +1,11 @@
 # Economic Revamp Script
 
+### Prerequisites
+```sh
+pip install -r requirements.txt
+```
+- mariadb
+
 ### Usage: 
 ```sh
 ./main.py

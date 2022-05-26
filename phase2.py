@@ -20,7 +20,7 @@ def phase2(connect):
         result = cursor.fetchall()
     except mariadb.error as e:
         print(f"Error: {e}")
-
+    ROW_COUNT = cursor.rowcount
     COUNTER = 0
     cursor.close()
 
@@ -72,7 +72,6 @@ def phase2(connect):
             )
         except mariadb.Error as e:
             print(f"Error: {e}")
-        ROW_COUNT = cursor.rowcount
         cursor.close()
         COUNTER += 1
 

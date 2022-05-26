@@ -14,6 +14,7 @@ def phase3(connect, DESCALE_VALUE):
         result = cursor.fetchall()
     except mariadb.error as e:
         print(f"Error: {e}")
+    ROW_COUNT = cursor.rowcount
     cursor.close()
 
     COUNTER = 0
@@ -31,15 +32,6 @@ def phase3(connect, DESCALE_VALUE):
             f"ID: {key} \nSteamID: {steamid} \nPhase 2 Wallet: ${money}\n"
         )
 
-        cursor = connect.cursor()
-        try:
-            cursor.execute(
-                f"UPDATE players SET _Money = {int(money)} WHERE _Key = {key}"
-            )
-        except mariadb.Error as e:
-            print(f"Error: {e}")
-        cursor.close()
-
         money = money / DESCALE_VALUE
 
         log_file_descale.write(
@@ -53,7 +45,6 @@ def phase3(connect, DESCALE_VALUE):
             )
         except mariadb.Error as e:
             print(f"Error: {e}")
-        ROW_COUNT = cursor.rowcount
         cursor.close()
         COUNTER += 1
 

@@ -1,13 +1,13 @@
 """Automates queries sent to the database to complete the following:
-- Refund all inventory items (except legacy) at 60% market value.
-- Decrease wallets using a tax bracket system as follows when the player has.
+- PHASE 1 Refund all inventory items (except legacy) at 60% market value.
+- PHASE 2 Decrease wallets using a tax bracket system as follows when the player has.
     - Up to $199,999: 0% Decrease
     - Between $200,000 and $499,999: 50% Decrease
     - Between $500,000 and $749,999: 55% Decrease
     - Between $750,000 and $999,999: 60% Decrease
     - Between $1,000,000 and $4,999,999: 65% Decrease
     - $5,000,000 or more: 70% Decrease
-- Descale wallets by a fixed number
+- PHASE 3 Descale wallets by a fixed number
 
 Usage:
     ./run.py
@@ -26,9 +26,9 @@ from items import ITEM_DICT, OMIT_ITEMS
 
 # Global variables for our requirements
 INVENTORY_REFUND_PERCENTAGE = 0.4  # 60% DECREASE
-DESCALE_VALUE = 5
+DESCALE_VALUE = 3
 
-# MaraDB Database Details - CHANGE WHERE NECCESSARY
+# MariaDB Database Details - CHANGE WHERE NECCESSARY
 SQL_HOST = 'localhost'
 SQL_PORT = 3306
 SQL_USER = 'root'
@@ -63,6 +63,7 @@ try:
 except mariadb.error as e:
     print(f"Error: {e}")
 
+# Going to use these for visual feedback
 ROW_COUNT = cursor.rowcount
 COUNTER = 0
 cursor.close()
@@ -142,7 +143,6 @@ cursor.close()
 print("\n[!]PHASE 1 REFUND SUCCESSFULLY EXECUTED[!]")
 
 
-
 """
 PHASE 2: Decrease wallets using a tax bracket system as follows when the player has:
     - Up to $199,999: 0% Decrease
@@ -184,7 +184,7 @@ for row in result:
 
     if money <= 199999:
         log_file_tax_bracket.write(
-            f"[!]NOT ENOUGH TO BE TAXED[!]\n\n"
+            "[!]NOT ENOUGH TO BE TAXED[!]\n\n"
         )
         continue
     elif money <= 499999:
@@ -263,7 +263,11 @@ for row in result:
     except mariadb.Error as e:
         print(f"Error: {e}")
 
-    money = money / 3
+    money = money / DESCALE_VALUE
+
+    log_file_descale.write(
+        f"Phase 3 Wallet: ${money}\n\n"
+    )
 
     cursor = connect.cursor()
     try:
@@ -274,9 +278,11 @@ for row in result:
         print(f"Error: {e}")
 
     COUNTER += 1
-    
+
     # Some visual feedback in console
     print(COUNTER, "of", ROW_COUNT, "descaled")
 
 cursor.close()
 print("\n[!]PHASE 3 DESCALE SUCCESSFULLY EXECUTED[!]")
+
+connect.close()

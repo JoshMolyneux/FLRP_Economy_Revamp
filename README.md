@@ -12,6 +12,8 @@ Edit 'main.py' with the DB information.
 
 Edit 'items.py' if you wish to add OMMITTED items
 
+When running the script, DO NOT open the log files during execution as data will not save!
+
 ### Usage:
 ```sh
 ./main.py

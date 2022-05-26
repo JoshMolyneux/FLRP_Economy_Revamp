@@ -48,6 +48,15 @@ except mariadb.Error as e:
     print(f"There was an error connecting to MariaDB: {e}")
     sys.exit(1)
 
+cursor = connect.cursor()
+try:
+    cursor.execute("SELECT SUM(_Money) FROM players")
+    # Store all the results in a variable
+    TOTAL_CASH_START = cursor.fetchone()
+except mariadb.error as e:
+    print(f"Error: {e}")
+cursor.close()
+
 
 """
 PHASE 1: Refund all inventory items (except legacy) at 60% market value.
@@ -62,11 +71,12 @@ try:
     result = cursor.fetchall()
 except mariadb.error as e:
     print(f"Error: {e}")
+cursor.close()
 
 # Going to use these for visual feedback
 ROW_COUNT = cursor.rowcount
 COUNTER = 0
-cursor.close()
+
 # Append to a file - and/or create it if it doesn't exist
 log_file_percentage_decrease = open(
     "PHASE_1_refund_log.txt", "a", encoding="utf-8"
@@ -134,12 +144,12 @@ for row in result:
         )
     except mariadb.Error as e:
         print(f"Error: {e}")
+    cursor.close()
 
     COUNTER += 1
     # Some visual feedback in console
     print(COUNTER, "of", ROW_COUNT, "refunded!")
 
-cursor.close()
 print("\n[!]PHASE 1 REFUND SUCCESSFULLY EXECUTED[!]")
 
 
@@ -162,10 +172,10 @@ try:
     result = cursor.fetchall()
 except mariadb.error as e:
     print(f"Error: {e}")
+cursor.close()
 
 ROW_COUNT = cursor.rowcount
 COUNTER = 0
-cursor.close()
 
 log_file_tax_bracket = open(
     "PHASE_2_tax_log.txt", "a", encoding="utf-8"
@@ -179,7 +189,7 @@ for row in result:
     pool = 0
 
     log_file_tax_bracket.write(
-        f"ID: {key} \nSteamID: {steamid} \nPhase 1 Wallet: {money}\n"
+        f"ID: {key} \nSteamID: {steamid} \nPhase 1 Wallet: ${money}\n"
     )
 
     if money <= 199999:
@@ -211,16 +221,16 @@ for row in result:
     cursor = connect.cursor()
     try:
         cursor.execute(
-            f"UPDATE players SET _Money = {int(money)} WHERE _Key = {key}"
+            f"UPDATE players SET _Money = {int(pool)} WHERE _Key = {key}"
         )
     except mariadb.Error as e:
         print(f"Error: {e}")
+    cursor.close()
 
     COUNTER += 1
     # Some visual feedback in console
     print(COUNTER, "of", ROW_COUNT, "taxed!")
 
-cursor.close()
 print("\n[!]PHASE 2 TAX DEDUCTION SUCCESSFULLY EXECUTED[!]")
 
 
@@ -237,10 +247,10 @@ try:
     result = cursor.fetchall()
 except mariadb.error as e:
     print(f"Error: {e}")
+cursor.close()
 
 ROW_COUNT = cursor.rowcount
 COUNTER = 0
-cursor.close()
 
 log_file_descale = open(
     "PHASE_3_descale_log.txt", "a", encoding="utf-8"
@@ -252,7 +262,7 @@ for row in result:
     money = row[2]
 
     log_file_descale.write(
-        f"ID: {key} \nSteamID: {steamid} \nPhase 2 Wallet: {money}\n"
+        f"ID: {key} \nSteamID: {steamid} \nPhase 2 Wallet: ${money}\n"
     )
 
     cursor = connect.cursor()
@@ -262,6 +272,7 @@ for row in result:
         )
     except mariadb.Error as e:
         print(f"Error: {e}")
+    cursor.close()
 
     money = money / DESCALE_VALUE
 
@@ -276,13 +287,24 @@ for row in result:
         )
     except mariadb.Error as e:
         print(f"Error: {e}")
+    cursor.close()
 
     COUNTER += 1
 
     # Some visual feedback in console
     print(COUNTER, "of", ROW_COUNT, "descaled")
 
-cursor.close()
 print("\n[!]PHASE 3 DESCALE SUCCESSFULLY EXECUTED[!]")
 
+cursor = connect.cursor()
+try:
+    cursor.execute("SELECT SUM(_Money) FROM players")
+    TOTAL_CASH_END = cursor.fetchone()
+except mariadb.error as e:
+    print(f"Error: {e}")
+cursor.close()
+
+total = TOTAL_CASH_START - TOTAL_CASH_END
+
+print(f"\n\n Total money removed: ${total}")
 connect.close()

@@ -142,6 +142,7 @@ cursor.close()
 print("\n[!]PHASE 1 REFUND SUCCESSFULLY EXECUTED[!]")
 
 
+
 """
 PHASE 2: Decrease wallets using a tax bracket system as follows when the player has:
     - Up to $199,999: 0% Decrease
@@ -214,7 +215,68 @@ for row in result:
         )
     except mariadb.Error as e:
         print(f"Error: {e}")
-    break
+
     COUNTER += 1
     # Some visual feedback in console
     print(COUNTER, "of", ROW_COUNT, "taxed!")
+
+cursor.close()
+print("\n[!]PHASE 2 TAX DEDUCTION SUCCESSFULLY EXECUTED[!]")
+
+
+"""
+PHASE 3: Descale wallets by a fixed number. ez pz
+"""
+
+input("Please press 'ENTER' to begin PHASE 3 descale")
+
+cursor = connect.cursor()
+try:
+    cursor.execute("SELECT _Key, _SteamID, _Money FROM players")
+    # Store all the results in a variable
+    result = cursor.fetchall()
+except mariadb.error as e:
+    print(f"Error: {e}")
+
+ROW_COUNT = cursor.rowcount
+COUNTER = 0
+cursor.close()
+
+log_file_descale = open(
+    "PHASE_3_descale_log.txt", "a", encoding="utf-8"
+)
+
+for row in result:
+    key = row[0]
+    steamid = row[1]
+    money = row[2]
+
+    log_file_descale.write(
+        f"ID: {key} \nSteamID: {steamid} \nPhase 2 Wallet: {money}\n"
+    )
+
+    cursor = connect.cursor()
+    try:
+        cursor.execute(
+            f"UPDATE players SET _Money = {int(money)} WHERE _Key = {key}"
+        )
+    except mariadb.Error as e:
+        print(f"Error: {e}")
+
+    money = money / 3
+
+    cursor = connect.cursor()
+    try:
+        cursor.execute(
+            f"UPDATE players SET _Money = {int(money)} WHERE _Key = {key}"
+        )
+    except mariadb.Error as e:
+        print(f"Error: {e}")
+
+    COUNTER += 1
+    
+    # Some visual feedback in console
+    print(COUNTER, "of", ROW_COUNT, "descaled")
+
+cursor.close()
+print("\n[!]PHASE 3 DESCALE SUCCESSFULLY EXECUTED[!]")

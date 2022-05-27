@@ -3,6 +3,7 @@ PHASE 1: Refund all inventory items (except legacy) at 60% market value.
 """
 import mariadb
 from items import ITEM_DICT, OMIT_ITEMS
+from config import config
 import math
 
 

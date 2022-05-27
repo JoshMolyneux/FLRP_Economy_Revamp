@@ -23,20 +23,12 @@ import sys
 from phase1 import phase1
 from phase2 import phase2
 from phase3 import phase3
+from config import config
 
 
 # Global variables for our requirements
 INVENTORY_REFUND_PERCENTAGE = 0.4  # 40% DECREASE (keep 60%)
 DESCALE_VALUE = 3
-
-# MariaDB Database Details - CHANGE WHERE NECCESSARY
-config = {
-    'user': 'root',
-    'password': '',
-    'host': 'localhost',
-    'port': 3306,
-    'database': 'fearless_cityrp'
-}
 
 try:
     connect = mariadb.connect(

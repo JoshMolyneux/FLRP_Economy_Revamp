@@ -18,7 +18,7 @@ def phase2(connect):
         cursor.execute("SELECT _Key, _SteamID, _Money FROM players")
         # Store all the results in a variable
         result = cursor.fetchall()
-    except mariadb.error as e:
+    except mariadb.Error as e:
         print(f"Error: {e}")
     ROW_COUNT = cursor.rowcount
     COUNTER = 0

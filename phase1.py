@@ -15,7 +15,7 @@ def phase1(connect, refund_percentage):
             "SELECT _Key, _SteamID, _Inventory, _Money FROM players")
         # Store all the results in a variable
         result = cursor.fetchall()
-    except mariadb.error as e:
+    except mariadb.Error as e:
         print(f"Error: {e}")
 
     # Going to use these for visual feedback

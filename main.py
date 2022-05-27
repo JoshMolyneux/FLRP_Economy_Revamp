@@ -30,17 +30,22 @@ from config import config
 INVENTORY_REFUND_PERCENTAGE = 0.4  # 40% DECREASE (keep 60%)
 DESCALE_VALUE = 3
 
-try:
-    connect = mariadb.connect(
-        **config,
-        autocommit=True
-    )
-except mariadb.Error as e:
-    print(f"There was an error connecting to MariaDB: {e}")
-    sys.exit(1)
+
+def connect():
+    try:
+        connect = mariadb.connect(
+            **config,
+            autocommit=True
+        )
+    except mariadb.Error as e:
+        print(f"There was an error connecting to MariaDB: {e}")
+        sys.exit(1)
+
+    return connect
+
 
 # Get the total sum of money BEFORE the changes
-cursor = connect.cursor()
+cursor = connect().cursor()
 try:
     cursor.execute("SELECT SUM(_Money) FROM players")
     # Store all the results in a variable
@@ -49,16 +54,15 @@ except mariadb.error as e:
     print(f"Error getting SUM value: {e}")
 cursor.close()
 
-
 if __name__ == '__main__':
     # Run our phases
-    phase1(connect, INVENTORY_REFUND_PERCENTAGE)
-    phase2(connect)
-    phase3(connect, DESCALE_VALUE)
+    phase1(connect(), INVENTORY_REFUND_PERCENTAGE)
+    phase2(connect())
+    phase3(connect(), DESCALE_VALUE)
 
 
 # Get the total sum of money AFTER the changes
-cursor = connect.cursor()
+cursor = connect().cursor()
 try:
     cursor.execute("SELECT SUM(_Money) FROM players")
     TOTAL_CASH_END = cursor.fetchone()
@@ -68,7 +72,7 @@ cursor.close()
 
 
 # Set all Inventory values to ZERO
-cursor = connect.cursor()
+cursor = connect().cursor()
 try:
     cursor.execute("UPDATE players SET _Invvalue = 0")
 except mariadb.error as e:
@@ -80,4 +84,4 @@ total = int(TOTAL_CASH_START[0]) - int(TOTAL_CASH_END[0])
 print(f"\n\n Total money BEFORE: ${int(TOTAL_CASH_START[0])}")
 print(f"\n\n Total money AFTER: ${int(TOTAL_CASH_END[0])}")
 print(f"\n\n Total money removed: ${total}")
-connect.close()
+connect().close()

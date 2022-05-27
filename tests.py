@@ -1,5 +1,6 @@
 import mariadb
 import unittest
+from . import config
 from config import test_config
 import utils
 
@@ -67,11 +68,13 @@ class phaseTests(unittest.TestCase):
     def tearDown(self):
         self.cursor.close()
 
-    def test_all_rows_returned(self):
+    def test_generic_all_rows_returned(self):
         actual = len(utils.sql_read("SELECT * FROM players"))
         expected = 7
-        self.assertEqual(actual, expected, True)
+        self.assertEqual(actual, expected)
+
+    #def test_phase_1_
 
 
 if __name__ == "__main__":
-    unittest.main()
+    unittest.main(verbosity=2)

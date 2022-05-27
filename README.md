@@ -8,7 +8,7 @@ pip install -r requirements.txt
 
 ### NOTES
 
-Edit 'main.py' with the DB information.
+Edit 'config.py' with the DB information.
 
 Edit 'items.py' if you wish to add OMMITTED items
 

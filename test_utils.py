@@ -1,10 +1,10 @@
 import mariadb
-from config import config
+from config import test_config
 
 
 def sql_read(query, params=None):
     try:
-        connect = mariadb.connect(**config)
+        connect = mariadb.connect(**test_config)
         cursor = connect.cursor()
         if params:
             cursor.execute(query, params)
@@ -30,7 +30,7 @@ def sql_read(query, params=None):
 def sql_write(query, params=None):
     try:
         connect = mariadb.connect(
-            **config,
+            **test_config,
             autocommit=True
         )
         cursor = connect.cursor()

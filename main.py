@@ -30,19 +30,17 @@ INVENTORY_REFUND_PERCENTAGE = 0.4  # 40% DECREASE (keep 60%)
 DESCALE_VALUE = 3
 
 # MariaDB Database Details - CHANGE WHERE NECCESSARY
-SQL_HOST = 'localhost'
-SQL_PORT = 3306
-SQL_USER = 'root'
-SQL_PASSWORD = ''
-SQL_DATABASE = 'fearless_cityrp'
+config = {
+    'user': 'root',
+    'password': '',
+    'host': 'localhost',
+    'port': 3306,
+    'database': 'fearless_cityrp'
+}
 
 try:
     connect = mariadb.connect(
-        user=SQL_USER,
-        password=SQL_PASSWORD,
-        host=SQL_HOST,
-        port=SQL_PORT,
-        database=SQL_DATABASE,
+        **config,
         autocommit=True
     )
 except mariadb.Error as e:

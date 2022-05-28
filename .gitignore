@@ -1,4 +1,6 @@
-
+__pycache__/
+*.py[cod]
+*$py.class
 PHASE_1_refund_log.txt
 PHASE_2_tax_log.txt
 PHASE_3_descale_log.txt

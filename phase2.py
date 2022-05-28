@@ -42,7 +42,7 @@ def phase2(connect):
             f"ID: {key} \nSteamID: {steamid} \nPhase 1 Wallet: ${money}\n"
         )
 
-        if money == NON_TAXABLE_LIMIT:
+        if money <= NON_TAXABLE_LIMIT:
             log_file_tax_bracket.write(
                 "[!]NOT ENOUGH TO BE TAXED[!]\n\n"
             )

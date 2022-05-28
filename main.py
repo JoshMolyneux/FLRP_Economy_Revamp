@@ -50,7 +50,7 @@ try:
     cursor.execute("SELECT SUM(_Money) FROM players")
     # Store all the results in a variable
     TOTAL_CASH_START = cursor.fetchone()
-except mariadb.error as e:
+except mariadb.Error as e:
     print(f"Error getting SUM value: {e}")
 cursor.close()
 
@@ -66,7 +66,7 @@ cursor = connect().cursor()
 try:
     cursor.execute("SELECT SUM(_Money) FROM players")
     TOTAL_CASH_END = cursor.fetchone()
-except mariadb.error as e:
+except mariadb.Error as e:
     print(f"Error: {e}")
 cursor.close()
 
@@ -75,7 +75,7 @@ cursor.close()
 cursor = connect().cursor()
 try:
     cursor.execute("UPDATE players SET _Invvalue = 0")
-except mariadb.error as e:
+except mariadb.Error as e:
     print(f"Error: {e}")
 cursor.close()
 

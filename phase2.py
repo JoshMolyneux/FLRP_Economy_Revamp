@@ -9,6 +9,10 @@ PHASE 2: Decrease wallets using a tax bracket system as follows when the player 
 """
 import mariadb
 
+NON_TAXABLE_LIMIT = 199999
+TAX = [0.5, 0.45, 0.4, 0.35, 0.3]
+LIMIT = [499999, 749999, 999999, 499999]
+
 
 def phase2(connect):
     input("Please press 'ENTER' to begin PHASE 2 tax deductions")
@@ -32,49 +36,54 @@ def phase2(connect):
         key = row[0]
         steamid = row[1]
         money = row[2]
-        tax = 0
         pool = 0
 
         log_file_tax_bracket.write(
             f"ID: {key} \nSteamID: {steamid} \nPhase 1 Wallet: ${money}\n"
         )
 
-        if money <= 199999:
+        if money == NON_TAXABLE_LIMIT:
             log_file_tax_bracket.write(
                 "[!]NOT ENOUGH TO BE TAXED[!]\n\n"
             )
             continue
-        elif money <= 499999:
-            tax = 0.5   # 50%
-            pool = (money - 199999) * tax
-        elif money <= 749999:
-            tax = 0.45  # 55%
-            pool = (money - 499999) * tax
-        elif money <= 999999:
-            tax = 0.4  # 60%
-            pool = (money - 749999) * tax
-        elif money <= 1000000:
-            tax = 0.35  # 65%
-            pool = (money - 999999) * tax
+        elif money <= LIMIT[0]:
+            pool = (TAX[0] * (money - NON_TAXABLE_LIMIT))
+        elif money <= LIMIT[1]:
+            pool = (TAX[0] * (LIMIT[0] - NON_TAXABLE_LIMIT)) + \
+                   (TAX[1] * (money - LIMIT[0]))
+        elif money <= LIMIT[2]:
+            pool = (TAX[0] * (LIMIT[0] - NON_TAXABLE_LIMIT)) + \
+                   (TAX[1] * (LIMIT[1] - LIMIT[0])) + \
+                   (TAX[2] * (money - LIMIT[1]))
+        elif money <= LIMIT[3]:
+            pool = (TAX[0] * (LIMIT[0] - NON_TAXABLE_LIMIT)) + \
+                   (TAX[1] * (LIMIT[1] - LIMIT[0])) + \
+                   (TAX[2] * (LIMIT[2] - LIMIT[1])) + \
+                   (TAX[3] * (money - LIMIT[2]))
         else:
-            tax = 0.3  # 70%
-            pool = (money - 1000000) * tax
+            pool = (TAX[0] * (LIMIT[0] - NON_TAXABLE_LIMIT)) + \
+                   (TAX[1] * (LIMIT[1] - LIMIT[0])) + \
+                   (TAX[2] * (LIMIT[2] - LIMIT[1])) + \
+                   (TAX[3] * (LIMIT[3] - LIMIT[2])) + \
+                   (TAX[4] * (money - LIMIT[3]))
 
-        money = money - pool
+        money -= pool
+
+        break
         log_file_tax_bracket.write(
-            f"Money Removed: ${money}\nPhase 2 Wallet: ${int(pool)}\n\n"
+            f"Money Removed: ${float(pool)}\nPhase 2 Wallet: ${money}\n\n"
         )
 
         cursor = connect.cursor()
         try:
             cursor.execute(
-                f"UPDATE players SET _Money = {int(pool)} WHERE _Key = {key}"
+                f"UPDATE players SET _Money = {money} WHERE _Key = {key}"
             )
         except mariadb.Error as e:
             print(f"Error: {e}")
         cursor.close()
         COUNTER += 1
-
         # Some visual feedback in console
         print(COUNTER, "of", ROW_COUNT, "taxed!")
 

@@ -71,13 +71,13 @@ def phase2(connect):
         money -= pool
 
         log_file_tax_bracket.write(
-            f"Money Removed: ${float(pool)}\nPhase 2 Wallet: ${money}\n\n"
+            f"Money Removed: ${money}\nPhase 2 Wallet: ${float(pool)}\n\n"
         )
 
         cursor = connect.cursor()
         try:
             cursor.execute(
-                f"UPDATE players SET _Money = {money} WHERE _Key = {key}"
+                f"UPDATE players SET _Money = {float(pool)} WHERE _Key = {key}"
             )
         except mariadb.Error as e:
             print(f"Error: {e}")

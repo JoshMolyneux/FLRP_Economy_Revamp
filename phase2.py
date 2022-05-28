@@ -70,7 +70,6 @@ def phase2(connect):
 
         money -= pool
 
-        break
         log_file_tax_bracket.write(
             f"Money Removed: ${float(pool)}\nPhase 2 Wallet: ${money}\n\n"
         )

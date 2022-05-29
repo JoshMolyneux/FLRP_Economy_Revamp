@@ -11,7 +11,7 @@ import mariadb
 
 NON_TAXABLE_LIMIT = 199999
 TAX = [0.5, 0.45, 0.4, 0.35, 0.3]
-LIMIT = [499999, 749999, 999999, 499999]
+LIMIT = [499999, 749999, 999999, 4999999]
 
 
 def phase2(connect):

@@ -18,17 +18,21 @@ Author:
     Discord: @Awestruck#3143
 """
 
-from econ_revamp import phase1, phase2
+import mariadb
+import sys
+from config import db_details
+from econ_revamp import phase1, phase2, get_total_money
 
 
 if __name__ == '__main__':
+    total_start_cash = get_total_money()
     # Run our phases
     phase1.main()
     phase2.main()
+    total_end_cash = get_total_money()
 
     # Print the total sum of money to the console
-    # total = int(econ_revamp.TOTAL_CASH_START[0]) - int(TOTAL_CASH_END[0])
-    # print(f"\n\n Total money BEFORE: ${int(TOTAL_CASH_START[0])}")
-    # print(f"\n\n Total money AFTER: ${int(TOTAL_CASH_END[0])}")
-    # print(f"\n\n Total money removed: ${total}")
-    # connect().close()
+    total = int(total_start_cash) - int(total_end_cash)
+    print(f"\n Total money BEFORE: ${int(total_start_cash)}")
+    print(f"\n Total money AFTER: ${int(TOTAL_end_cash)}")
+    print(f"\n Total money removed: ${total}")

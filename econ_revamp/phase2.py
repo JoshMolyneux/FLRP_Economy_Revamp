@@ -8,74 +8,105 @@ PHASE 2: Decrease wallets using a tax bracket system as follows when the player 
     - $5,000,000 or more: 70% Decrease
 """
 import mariadb
+from . import get_all_players, connect
+from config import DESCALE_VALUE
+
+COUNTER = 0
+
+NON_TAXABLE_LIMIT = 199999
+TAX = [0.5, 0.45, 0.4, 0.35, 0.3]
+LIMIT = [499999, 749999, 999999, 4999999]
 
 
-def phase2(connect):
-    input("Please press 'ENTER' to begin PHASE 2 tax deductions")
+def money_is_non_taxable(money):
+    if money <= NON_TAXABLE_LIMIT:
+        return True
 
-    cursor = connect.cursor()
+
+def process_tax(money):
+    pool = 0
+
+    if money <= LIMIT[0]:
+        pool = (TAX[0] * (money - NON_TAXABLE_LIMIT))
+    elif money <= LIMIT[1]:
+        pool = (TAX[0] * (LIMIT[0] - NON_TAXABLE_LIMIT)) + \
+               (TAX[1] * (money - LIMIT[0]))
+    elif money <= LIMIT[2]:
+        pool = (TAX[0] * (LIMIT[0] - NON_TAXABLE_LIMIT)) + \
+               (TAX[1] * (LIMIT[1] - LIMIT[0])) + \
+               (TAX[2] * (money - LIMIT[1]))
+    elif money <= LIMIT[3]:
+        pool = (TAX[0] * (LIMIT[0] - NON_TAXABLE_LIMIT)) + \
+               (TAX[1] * (LIMIT[1] - LIMIT[0])) + \
+               (TAX[2] * (LIMIT[2] - LIMIT[1])) + \
+               (TAX[3] * (money - LIMIT[2]))
+    else:
+        pool = (TAX[0] * (LIMIT[0] - NON_TAXABLE_LIMIT)) + \
+               (TAX[1] * (LIMIT[1] - LIMIT[0])) + \
+               (TAX[2] * (LIMIT[2] - LIMIT[1])) + \
+               (TAX[3] * (LIMIT[3] - LIMIT[2])) + \
+               (TAX[4] * (money - LIMIT[3]))
+
+    return pool
+
+
+def update_user_money_in_db(money, key):
+    cursor = connect().cursor()
     try:
-        cursor.execute("SELECT _Key, _SteamID, _Money FROM players")
-        # Store all the results in a variable
-        result = cursor.fetchall()
+        cursor.execute(
+            f"UPDATE players SET _Money = {money} WHERE _Key = {key}"
+        )
     except mariadb.Error as e:
         print(f"Error: {e}")
-    ROW_COUNT = cursor.rowcount
-    COUNTER = 0
     cursor.close()
 
-    log_file_tax_bracket = open(
+
+def main():
+    global COUNTER
+
+    input("Please press 'ENTER' to begin PHASE 2 tax deductions")
+
+    log = open(
         "PHASE_2_tax_log.txt", "a", encoding="utf-8"
     )
 
-    for row in result:
-        key = row[0]
-        steamid = row[1]
-        money = row[2]
-        tax = 0
+    users, rowcount = get_all_players('_Key, _SteamID, _Money')
+
+    for user in users:
+        key = user[0]
+        steamid = user[1]
+        money = user[2]
         pool = 0
 
-        log_file_tax_bracket.write(
-            f"ID: {key} \nSteamID: {steamid} \nPhase 1 Wallet: ${money}\n"
+        log.write(
+            f"ID: {key} \nSteamID: {steamid} \nWallet (before tax and descale): ${money}\n"
         )
 
-        if money <= 199999:
-            log_file_tax_bracket.write(
+        if money_is_non_taxable(money):
+            log.write(
                 "[!]NOT ENOUGH TO BE TAXED[!]\n\n"
             )
             continue
-        elif money <= 499999:
-            tax = 0.5   # 50%
-            pool = (money - 199999) * tax
-        elif money <= 749999:
-            tax = 0.45  # 55%
-            pool = (money - 499999) * tax
-        elif money <= 999999:
-            tax = 0.4  # 60%
-            pool = (money - 749999) * tax
-        elif money <= 1000000:
-            tax = 0.35  # 65%
-            pool = (money - 999999) * tax
-        else:
-            tax = 0.3  # 70%
-            pool = (money - 1000000) * tax
 
-        money = money - pool
-        log_file_tax_bracket.write(
-            f"Money Removed: ${money}\nPhase 2 Wallet: ${int(pool)}\n\n"
+        pool = process_tax(money)
+
+        money_removed = money - pool
+
+        log.write(
+            f"Money Removed: ${money_removed}\nWallet (after tax): ${pool}\n"
         )
 
-        cursor = connect.cursor()
-        try:
-            cursor.execute(
-                f"UPDATE players SET _Money = {int(pool)} WHERE _Key = {key}"
-            )
-        except mariadb.Error as e:
-            print(f"Error: {e}")
-        cursor.close()
+        money = pool / DESCALE_VALUE
+
+        log.write(
+            f"Final Wallet (after Refund, Decrease, Descale): ${int(money)}\n\n"
+        )
+
+        update_user_money_in_db(int(money), key)
+
         COUNTER += 1
 
         # Some visual feedback in console
-        print(COUNTER, "of", ROW_COUNT, "taxed!")
+        print(COUNTER, "of", rowcount, "taxed!")
 
     print("\n[!]PHASE 2 TAX DEDUCTION SUCCESSFULLY EXECUTED[!]")

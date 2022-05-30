@@ -103,7 +103,7 @@ class phaseTests(unittest.TestCase):
         result = self.cursor.fetchone()
         items = phase1.convert_inventory_into_items(result[0])
         new_inventory = []
-        refund = phase1.refund_user(items, new_inventory)[1]
+        phase1.refund_user(items, new_inventory)[1]
         inventory = phase1.join_new_inventory(new_inventory)
         actual = inventory
         print(actual)
@@ -127,7 +127,15 @@ class phaseTests(unittest.TestCase):
         expected = 52424323
         self.assertEqual(actual[1], expected)
 
+    def test_phase_2_check_money_is_non_taxable(self):
+        self.cursor.execute("SELECT _Money FROM players WHERE _Key = 2")
+        money = self.cursor.fetchone()[0]
+        actual = phase2.money_is_non_taxable(money)
+        expected = True
+        self.assertEqual(actual, expected)
+
+    # def test_phase_2_
 
 
 if __name__ == "__main__":
-    unittest.main(verbosity=2)
+    unittest.main(verbosity=3)

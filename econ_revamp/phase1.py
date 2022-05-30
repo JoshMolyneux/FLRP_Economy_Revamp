@@ -5,7 +5,7 @@ import mariadb
 from .items import ITEM_DICT, OMIT_ITEMS
 from config import INVENTORY_REFUND_PERCENTAGE as refund_percentage
 import math
-from . import get_all_players, get_total_money, connect
+from . import get_all_players, connect
 
 COUNTER = 0
 
@@ -59,7 +59,7 @@ def join_new_inventory(inventory):
     return inventory
 
 
-def update_user(money, inventory, key):
+def update_user_money_inventory_in_db(money, inventory, key):
     cursor = connect().cursor()
     try:
         cursor.execute(
@@ -90,7 +90,7 @@ def main():
         new_inventory = []
 
         log.write(
-            f"ID: {key} \nSteamID: {steamid} \nOld Wallet: ${money}\n"
+            f"ID: {key} \nSteamID: {steamid} \nOriginal Wallet: ${money}\n"
         )
 
         if user_has_inventory(inventory) is False:
@@ -107,22 +107,19 @@ def main():
         net_worth = money + pre_value
 
         log.write(
-            f"New Wallet (Wallet + Inventory): ${net_worth}\n"
+            f"Wallet (+ Inventory value): ${net_worth}\n"
         )
 
         money += post_value
         # More log file additions
         log.write(
-            f"Phase 1 Wallet (After % Decrease on inventory value): ${money}\n\n"
+            f"Wallet - after {(refund_percentage * 100)}% decrease on inventory value): ${money}\n\n"
         )
 
-        #update_user(money, inventory, key)
+        update_user_money_inventory_in_db(money, inventory, key)
 
         COUNTER += 1
         # Some visual feedback in console
         print(COUNTER, "of", rowcount, "refunded!")
-
-    REFUND = 0
-    COUNTER = 0
 
     print("\n[!]PHASE 1 REFUND SUCCESSFULLY EXECUTED[!]")

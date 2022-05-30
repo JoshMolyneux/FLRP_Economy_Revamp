@@ -8,7 +8,7 @@ pip install -r requirements.txt
 
 ### NOTES
 
-Edit 'main.py' with the DB information.
+Edit 'config.py' with the DB information.
 
 Edit 'items.py' if you wish to add OMMITTED items
 
@@ -33,6 +33,4 @@ Decrease wallets using a tax bracket system as follows when the player has:
 - Between $1,000,000 and $4,999,999: 65% Decrease
 - $5,000,000 or more: 70% Decrease
 
-### PHASE 3
-
-Descale wallets by a fixed number.
+Descale wallets by a fixed number

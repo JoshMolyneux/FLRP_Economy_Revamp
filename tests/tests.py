@@ -60,6 +60,8 @@ class phaseTests(unittest.TestCase):
     def setUp(self):
         self.connect = connect(test=True)
         self.cursor = self.connect.cursor()
+        self.refund = 0
+        self.inventory = []
 
     def tearDown(self):
         self.cursor.close()
@@ -85,10 +87,46 @@ class phaseTests(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_phase_1_refund_user(self):
-        self.cursor.execute("SELECT _Inventory, _Money FROM players")
+        self.cursor.execute("SELECT _Inventory, _Money FROM players WHERE _Key = 3")
         result = self.cursor.fetchone()
         items = phase1.convert_inventory_into_items(result[0])
-        #self.cursor.execute()
+        new_inventory = []
+        refund = phase1.refund_user(items, new_inventory)[1] + result[1]
+        actual = refund
+        print(actual)
+        # (100,000 * 0.6) = 60,000 + 52,364,323 = 52,424,323
+        expected = 52424323
+        self.assertEqual(actual, expected)
+
+    def test_phase_1_put_inventory_back_together(self):
+        self.cursor.execute("SELECT _Inventory FROM players WHERE _Key = 3")
+        result = self.cursor.fetchone()
+        items = phase1.convert_inventory_into_items(result[0])
+        new_inventory = []
+        refund = phase1.refund_user(items, new_inventory)[1]
+        inventory = phase1.join_new_inventory(new_inventory)
+        actual = inventory
+        print(actual)
+        expected = "bmwgtr: 1"
+        self.assertEqual(actual, expected)
+
+    def test_phase_1_update_user_in_db(self):
+        self.cursor.execute("SELECT _Inventory FROM players WHERE _Key = 3")
+        result = self.cursor.fetchone()
+        items = phase1.convert_inventory_into_items(result[0])
+        new_inventory = []
+        refund = phase1.refund_user(items, new_inventory)[1]
+        inventory = phase1.join_new_inventory(new_inventory)
+        self.cursor.execute(
+            f"UPDATE players SET _Money = _Money + {refund}, _Inventory = '{inventory}' WHERE _Key = 3"
+        )
+        self.cursor.execute("SELECT _Inventory, _Money FROM players WHERE _Key = 3")
+        actual = self.cursor.fetchone()
+        expected = 'bmwgtr: 1'
+        self.assertEqual(actual[0], expected)
+        expected = 52424323
+        self.assertEqual(actual[1], expected)
+
 
 
 if __name__ == "__main__":

@@ -7,7 +7,6 @@ from config import INVENTORY_REFUND_PERCENTAGE as refund_percentage
 import math
 from . import get_all_players, get_total_money, connect
 
-REFUND = 0
 COUNTER = 0
 
 
@@ -28,26 +27,26 @@ def convert_inventory_into_items(inventory):
     return items
 
 
-def refund(items, inventory):
-    global REFUND
+def refund_user(items, inventory):
+    refund = 0
 
     for item in items:
         # name = item[0]
         # quantity = item[1]
         # Check the users items are in the dictionary and refund them
         if item[0] in ITEM_DICT.keys():
-            REFUND += ITEM_DICT[item[0]] * float(item[1])
+            refund += ITEM_DICT[item[0]] * float(item[1])
         # If they have legacy vehicles add them to a new list
         elif item[0] in OMIT_ITEMS:
             inventory.append(item)
 
-    pre_value = REFUND
+    pre_value = refund
 
-    REFUND = int(math.ceil(REFUND * refund_percentage))
+    refund = int(math.ceil(refund * refund_percentage))
 
-    post_value = REFUND
+    post_value = refund
 
-    return pre_value, post_value
+    return pre_value, refund, post_value
 
 
 def join_new_inventory(inventory):
@@ -56,6 +55,8 @@ def join_new_inventory(inventory):
         inventory = "; ".join(inventory)
     else:
         inventory = ""
+
+    return inventory
 
 
 def update_user(money, inventory, key):
@@ -70,7 +71,7 @@ def update_user(money, inventory, key):
 
 
 def main():
-    global REFUND, COUNTER
+    global COUNTER
 
     input("Please press 'ENTER' to begin PHASE 1 refunds")
 
@@ -98,10 +99,11 @@ def main():
 
         items = convert_inventory_into_items(inventory)
 
-        pre_value, post_value = refund(items, new_inventory)
+        pre_value, refund, post_value = refund_user(items, new_inventory)
 
-        join_new_inventory(new_inventory)
+        inventory = join_new_inventory(new_inventory)
 
+        print(inventory)
         net_worth = money + pre_value
 
         log.write(

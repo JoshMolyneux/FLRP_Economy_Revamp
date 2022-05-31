@@ -20,6 +20,20 @@ except mariadb.Error as e:
     sys.exit(1)
 
 
+def check_user_already_processed_phase1(key):
+    cursor = connect.cursor()
+    try:
+        cursor.execute(
+            f"SELECT phase1_verify FROM players WHERE _Key = {key}"
+        )
+        result = cursor.fetchone()
+        if result[0] == 1:
+            return True
+    except mariadb.Error as e:
+        print(f"Error: {e}")
+    cursor.close()
+
+
 def user_has_inventory(inventory):
     if inventory == "" or inventory == "NULL" or inventory is None:
         return False
@@ -72,7 +86,7 @@ def update_user_money_inventory_in_db(money, inventory, key):
     cursor = connect.cursor()
     try:
         cursor.execute(
-            f"UPDATE players SET _Money = _Money + {money}, _Inventory = '{inventory}' WHERE _Key = {key}"
+            f"UPDATE players SET _Money = _Money + {money}, _Inventory = '{inventory}', phase1_verify = 1 WHERE _Key = {key}"
         )
     except mariadb.Error as e:
         print(f"Error: {e}")
@@ -97,6 +111,9 @@ def main():
         inventory = user[2]
         money = user[3]
         new_inventory = []
+
+        if check_user_already_processed_phase1(key):
+            continue
 
         log.write(
             f"ID: {key} \nSteamID: {steamid} \nOriginal Wallet: ${money}\n"

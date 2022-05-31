@@ -28,6 +28,20 @@ except mariadb.Error as e:
     sys.exit(1)
 
 
+def check_user_already_processed_phase2(key):
+    cursor = connect.cursor()
+    try:
+        cursor.execute(
+            f"SELECT phase2_verify FROM players WHERE _Key = {key}"
+        )
+        result = cursor.fetchone()
+        if result[0] == 1:
+            return True
+    except mariadb.Error as e:
+        print(f"Error: {e}")
+    cursor.close()
+
+
 def money_is_non_taxable(money):
     if money <= NON_TAXABLE_LIMIT:
         return True
@@ -64,7 +78,7 @@ def update_user_money_in_db(money, key):
     cursor = connect.cursor()
     try:
         cursor.execute(
-            f"UPDATE players SET _Money = {money} WHERE _Key = {key}"
+            f"UPDATE players SET _Money = {money}, phase2_verify = 1 WHERE _Key = {key}"
         )
     except mariadb.Error as e:
         print(f"Error: {e}")
@@ -88,6 +102,9 @@ def main():
         money = user[2]
         pool = 0
 
+        if check_user_already_processed_phase2(key):
+            continue
+
         log.write(
             f"ID: {key} \nSteamID: {steamid} \nWallet (before tax and descale): ${money}\n"
         )
@@ -96,10 +113,13 @@ def main():
             log.write(
                 "[!]NOT ENOUGH TO BE TAXED[!]\n\n"
             )
+
             money /= DESCALE_VALUE
+
             log.write(
                 f"Final Wallet (after Refund, Descale): ${int(money)}\n\n"
             )
+
             update_user_money_in_db(int(money), key)
 
             COUNTER += 1

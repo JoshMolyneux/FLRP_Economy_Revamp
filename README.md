@@ -10,7 +10,7 @@ pip install -r requirements.txt
 
 Edit 'config.py' with the DB information.
 
-Edit 'items.py' if you wish to add OMMITTED items
+Edit 'econ_revamp/items.py' if you wish to add OMMITTED items
 
 When running the script, DO NOT open the log files during execution as data will not save!
 

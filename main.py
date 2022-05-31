@@ -34,3 +34,4 @@ if __name__ == '__main__':
     print(f"\n Total money BEFORE: ${int(total_start_cash[0])}")
     print(f"\n Total money AFTER: ${int(total_end_cash[0])}")
     print(f"\n Total money removed: ${total}")
+    input()

@@ -27,6 +27,20 @@ def connect(test=False):
     return connect
 
 
+def create_verification_db_columns():
+    cursor = connect().cursor()
+
+    try:
+        cursor.execute(
+            """ALTER TABLE players
+                ADD COLUMN IF NOT EXISTS phase1_verify BOOLEAN DEFAULT 0,
+                ADD COLUMN IF NOT EXISTS phase2_verify BOOLEAN DEFAULT 0"""
+        )
+    except mariadb.Error as e:
+        print(f"Error getting creating columns: {e}")
+    cursor.close()
+
+
 def get_all_players(params, test=False):
     cursor = connect(test).cursor()
 

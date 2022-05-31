@@ -74,8 +74,8 @@ class phaseTests(unittest.TestCase):
     def test_generic_verification_columns_created(self):
         self.cursor.execute(
             """ALTER TABLE players
-                ADD phase1_verify BOOLEAN DEFAULT 0,
-                ADD phase2_verify BOOLEAN DEFAULT 0"""
+                ADD COLUMN IF NOT EXISTS phase1_verify BOOLEAN DEFAULT 0,
+                ADD COLUMN IF NOT EXISTS phase2_verify BOOLEAN DEFAULT 0"""
         )
         self.cursor.execute("SELECT phase1_verify, phase2_verify FROM players")
         result = self.cursor.description

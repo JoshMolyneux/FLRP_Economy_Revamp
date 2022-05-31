@@ -18,10 +18,13 @@ Author:
     Discord: @Awestruck#3143
 """
 
-from econ_revamp import phase1, phase2, get_total_money, set_inv_value_to_zero
+from econ_revamp import phase1,\
+    phase2, get_total_money, set_inv_value_to_zero,\
+    create_verification_db_columns
 
 
 if __name__ == '__main__':
+    create_verification_db_columns()
     total_start_cash = get_total_money()
     # Run our phases
     phase1.main()

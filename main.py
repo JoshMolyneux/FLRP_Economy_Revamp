@@ -21,7 +21,7 @@ Author:
 import mariadb
 import sys
 from config import db_details
-from econ_revamp import phase1, phase2, get_total_money
+from econ_revamp import phase1, phase2, get_total_money, set_inv_value_to_zero
 
 
 if __name__ == '__main__':
@@ -30,9 +30,10 @@ if __name__ == '__main__':
     phase1.main()
     phase2.main()
     total_end_cash = get_total_money()
+    set_inv_value_to_zero()
 
     # Print the total sum of money to the console
-    total = int(total_start_cash) - int(total_end_cash)
-    print(f"\n Total money BEFORE: ${int(total_start_cash)}")
-    print(f"\n Total money AFTER: ${int(TOTAL_end_cash)}")
+    total = int(total_start_cash[0]) - int(total_end_cash[0])
+    print(f"\n Total money BEFORE: ${int(total_start_cash[0])}")
+    print(f"\n Total money AFTER: ${int(total_end_cash[0])}")
     print(f"\n Total money removed: ${total}")

@@ -3,8 +3,7 @@ sys.path.append("..")
 import mariadb
 import unittest
 import test_utils as utils
-from econ_revamp import phase1, phase2, phase3, connect, get_all_players
-from config import test_db_details
+from econ_revamp import phase1, phase2, connect, get_all_players
 
 
 class phaseTests(unittest.TestCase):

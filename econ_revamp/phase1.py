@@ -2,16 +2,26 @@
 PHASE 1: Refund all inventory items (except legacy) at 60% market value.
 """
 import mariadb
+import sys
 from .items import ITEM_DICT, OMIT_ITEMS
-from config import INVENTORY_REFUND_PERCENTAGE as refund_percentage
+from config import db_details, INVENTORY_REFUND_PERCENTAGE as refund_percentage
 import math
-from . import get_all_players, connect
+from . import get_all_players
 
 COUNTER = 0
 
+try:
+    connect = mariadb.connect(
+        **db_details,
+        autocommit=True
+    )
+except mariadb.Error as e:
+    print(f"There was an error connecting to MariaDB: {e}")
+    sys.exit(1)
+
 
 def user_has_inventory(inventory):
-    if inventory == "":
+    if inventory == "" or inventory == "NULL" or inventory is None:
         return False
 
 
@@ -22,7 +32,6 @@ def convert_inventory_into_items(inventory):
     # ... even though nothing followed it lol
     inv = [i.replace(";", "") for i in inv]
     items = [i.split(": ", 2) for i in inv]
-    print(items)
 
     return items
 
@@ -60,7 +69,7 @@ def join_new_inventory(inventory):
 
 
 def update_user_money_inventory_in_db(money, inventory, key):
-    cursor = connect().cursor()
+    cursor = connect.cursor()
     try:
         cursor.execute(
             f"UPDATE players SET _Money = _Money + {money}, _Inventory = '{inventory}' WHERE _Key = {key}"
@@ -77,7 +86,7 @@ def main():
 
     # Append to a file - and/or create it if it doesn't exist
     log = open(
-        "PHASE_1_refund_log.txt", "a", encoding="utf-8"
+        "1_refund_log.txt", "a", encoding="utf-8"
     )
 
     users, rowcount = get_all_players('_Key, _SteamID, _Inventory, _Money')
@@ -103,7 +112,6 @@ def main():
 
         inventory = join_new_inventory(new_inventory)
 
-        print(inventory)
         net_worth = money + pre_value
 
         log.write(

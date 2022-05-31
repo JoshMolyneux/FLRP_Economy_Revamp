@@ -8,14 +8,24 @@ PHASE 2: Decrease wallets using a tax bracket system as follows when the player 
     - $5,000,000 or more: 70% Decrease
 """
 import mariadb
-from . import get_all_players, connect
-from config import DESCALE_VALUE
+import sys
+from . import get_all_players
+from config import db_details, DESCALE_VALUE
 
 COUNTER = 0
 
 NON_TAXABLE_LIMIT = 199999
 TAX = [0.5, 0.45, 0.4, 0.35, 0.3]
 LIMIT = [499999, 749999, 999999, 4999999]
+
+try:
+    connect = mariadb.connect(
+        **db_details,
+        autocommit=True
+    )
+except mariadb.Error as e:
+    print(f"There was an error connecting to MariaDB: {e}")
+    sys.exit(1)
 
 
 def money_is_non_taxable(money):
@@ -51,7 +61,7 @@ def process_tax(money):
 
 
 def update_user_money_in_db(money, key):
-    cursor = connect().cursor()
+    cursor = connect.cursor()
     try:
         cursor.execute(
             f"UPDATE players SET _Money = {money} WHERE _Key = {key}"
@@ -64,10 +74,10 @@ def update_user_money_in_db(money, key):
 def main():
     global COUNTER
 
-    input("Please press 'ENTER' to begin PHASE 2 tax deductions")
+    input("Please press 'ENTER' to begin PHASE 2 tax deductions AND descale")
 
     log = open(
-        "PHASE_2_tax_log.txt", "a", encoding="utf-8"
+        "2_decrease_descale_log.txt", "a", encoding="utf-8"
     )
 
     users, rowcount = get_all_players('_Key, _SteamID, _Money')

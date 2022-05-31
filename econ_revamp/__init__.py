@@ -37,7 +37,7 @@ def get_all_players(params, test=False):
         result = cursor.fetchall()
         rowcount = cursor.rowcount
     except mariadb.Error as e:
-        print(f"Error: {e}")
+        print(f"Error getting all players: {e}")
     cursor.close()
 
     return result, rowcount
@@ -62,5 +62,5 @@ def set_inv_value_to_zero():
     try:
         cursor.execute("UPDATE players SET _Invvalue = 0")
     except mariadb.error as e:
-        print(f"Error: {e}")
+        print(f"Error setting inv values to zero: {e}")
     cursor.close()

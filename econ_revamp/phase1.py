@@ -120,7 +120,9 @@ def main():
         )
 
         if user_has_inventory(inventory) is False:
-            log.write("[!]NO INVENTORY[!]")
+            log.write("[!]NO INVENTORY[!]\n\n")
+            COUNTER += 1
+            print(COUNTER, "of", rowcount, "not processed due to No Inventory")
             continue
 
         items = convert_inventory_into_items(inventory)

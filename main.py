@@ -20,68 +20,20 @@ Author:
 
 import mariadb
 import sys
-from phase1 import phase1
-from phase2 import phase2
-from phase3 import phase3
-from config import config
+from config import db_details
+from econ_revamp import phase1, phase2, get_total_money, set_inv_value_to_zero
 
-
-# Global variables for our requirements
-INVENTORY_REFUND_PERCENTAGE = 0.6  # 40% DECREASE (keep 60%)
-DESCALE_VALUE = 3
-
-
-def connect():
-    try:
-        connect = mariadb.connect(
-            **config,
-            autocommit=True
-        )
-    except mariadb.Error as e:
-        print(f"There was an error connecting to MariaDB: {e}")
-        sys.exit(1)
-
-    return connect
-
-
-# Get the total sum of money BEFORE the changes
-cursor = connect().cursor()
-try:
-    cursor.execute("SELECT SUM(_Money) FROM players")
-    # Store all the results in a variable
-    TOTAL_CASH_START = cursor.fetchone()
-except mariadb.Error as e:
-    print(f"Error getting SUM value: {e}")
-cursor.close()
 
 if __name__ == '__main__':
+    total_start_cash = get_total_money()
     # Run our phases
-    phase1(connect(), INVENTORY_REFUND_PERCENTAGE)
-    phase2(connect())
-    phase3(connect(), DESCALE_VALUE)
+    phase1.main()
+    phase2.main()
+    total_end_cash = get_total_money()
+    set_inv_value_to_zero()
 
-
-# Get the total sum of money AFTER the changes
-cursor = connect().cursor()
-try:
-    cursor.execute("SELECT SUM(_Money) FROM players")
-    TOTAL_CASH_END = cursor.fetchone()
-except mariadb.Error as e:
-    print(f"Error: {e}")
-cursor.close()
-
-
-# Set all Inventory values to ZERO
-cursor = connect().cursor()
-try:
-    cursor.execute("UPDATE players SET _Invvalue = 0")
-except mariadb.Error as e:
-    print(f"Error: {e}")
-cursor.close()
-
-# Print the total sum of money to the console
-total = int(TOTAL_CASH_START[0]) - int(TOTAL_CASH_END[0])
-print(f"\n\n Total money BEFORE: ${int(TOTAL_CASH_START[0])}")
-print(f"\n\n Total money AFTER: ${int(TOTAL_CASH_END[0])}")
-print(f"\n\n Total money removed: ${total}")
-connect().close()
+    # Print the total sum of money to the console
+    total = int(total_start_cash[0]) - int(total_end_cash[0])
+    print(f"\n Total money BEFORE: ${int(total_start_cash[0])}")
+    print(f"\n Total money AFTER: ${int(total_end_cash[0])}")
+    print(f"\n Total money removed: ${total}")

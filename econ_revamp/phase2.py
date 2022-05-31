@@ -96,6 +96,14 @@ def main():
             log.write(
                 "[!]NOT ENOUGH TO BE TAXED[!]\n\n"
             )
+            money /= DESCALE_VALUE
+            log.write(
+                f"Final Wallet (after Refund, Descale): ${int(money)}\n\n"
+            )
+            update_user_money_in_db(int(money), key)
+
+            COUNTER += 1
+            print(COUNTER, "of", rowcount, "descaled only!")
             continue
 
         pool = process_tax(money)
@@ -117,6 +125,6 @@ def main():
         COUNTER += 1
 
         # Some visual feedback in console
-        print(COUNTER, "of", rowcount, "taxed!")
+        print(COUNTER, "of", rowcount, "taxed AND descaled!")
 
     print("\n[!]PHASE 2 TAX DEDUCTION SUCCESSFULLY EXECUTED[!]")

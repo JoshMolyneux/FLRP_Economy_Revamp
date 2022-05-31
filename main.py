@@ -18,9 +18,6 @@ Author:
     Discord: @Awestruck#3143
 """
 
-import mariadb
-import sys
-from config import db_details
 from econ_revamp import phase1, phase2, get_total_money, set_inv_value_to_zero
 
 

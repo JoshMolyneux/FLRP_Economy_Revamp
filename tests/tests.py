@@ -71,6 +71,18 @@ class phaseTests(unittest.TestCase):
         expected = 7
         self.assertEqual(actual, expected)
 
+    def test_generic_verification_columns_created(self):
+        self.cursor.execute(
+            """ALTER TABLE players
+                ADD phase1_verify BOOLEAN DEFAULT 0,
+                ADD phase2_verify BOOLEAN DEFAULT 0"""
+        )
+        self.cursor.execute("SELECT phase1_verify, phase2_verify FROM players")
+        result = self.cursor.description
+        actual = result[0][0], result[1][0]
+        expected = ('phase1_verify', 'phase2_verify')
+        self.assertEqual(actual, expected)
+
     def test_phase_1_user_has_inventory(self):
         self.cursor.execute("SELECT _Inventory FROM players WHERE _Key = 7")
         result = self.cursor.fetchone()

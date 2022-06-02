@@ -130,7 +130,7 @@ def main():
             cursor.close()
             log.write("[!]NO INVENTORY[!]\n\n")
             COUNTER += 1
-            print(COUNTER, "of", rowcount, "not processed due to No Inventory")
+            print(COUNTER, "of", rowcount, "does not have an Inventory")
             continue
 
         items = convert_inventory_into_items(inventory)

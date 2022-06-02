@@ -6,6 +6,10 @@ PHASE 2: Decrease wallets using a tax bracket system as follows when the player 
     - Between $750,000 and $999,999: 60% Decrease
     - Between $1,000,000 and $4,999,999: 65% Decrease
     - $5,000,000 or more: 70% Decrease
+
+    and
+
+    Process descale by fixed DESCALE_VALUE
 """
 import mariadb
 import sys

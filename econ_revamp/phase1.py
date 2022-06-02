@@ -148,7 +148,7 @@ def main():
         money += post_value
         # More log file additions
         log.write(
-            f"Wallet - after {(refund_percentage * 100)}% decrease on inventory value): ${money}\n\n"
+            f"Wallet - (after {(refund_percentage * 100)}% decrease on inventory value): ${int(money)}\n\n"
         )
 
         update_user_money_inventory_in_db(money, inventory, key)

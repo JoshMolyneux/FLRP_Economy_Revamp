@@ -115,7 +115,7 @@ def main():
 
         if money_is_non_taxable(money):
             log.write(
-                "[!]NOT ENOUGH TO BE TAXED[!]\n\n"
+                "[!]NOT ENOUGH TO BE TAXED[!]\n"
             )
 
             money /= DESCALE_VALUE

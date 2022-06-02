@@ -120,6 +120,14 @@ def main():
         )
 
         if user_has_inventory(inventory) is False:
+            cursor = connect.cursor()
+            try:
+                cursor.execute(
+                    f"UPDATE players SET phase1_verify = 1 WHERE _Key = {key}"
+                )
+            except mariadb.Error as e:
+                print(f"Error: {e}")
+            cursor.close()
             log.write("[!]NO INVENTORY[!]\n\n")
             COUNTER += 1
             print(COUNTER, "of", rowcount, "not processed due to No Inventory")

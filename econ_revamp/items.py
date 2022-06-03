@@ -5,7 +5,8 @@ OMIT_ITEMS = [
     'jagetype',
     'dodgecharge2008',
     'bmwgtr_legacy',
-    'bmwgtr'
+    'bmwgtr',
+    'live_worm'
 ]
 
 ITEM_DICT = {
@@ -215,7 +216,7 @@ ITEM_DICT = {
     'cabbage': 60,
     'potato': 45,
     'beetroot': 34,
-    'live_worm': 0,
+    #CHECK 'live_worm': 0,
     'policeinterceptor': 400000,
     'chevroletunmarked': 200000,
     'chevroletpolicecar': 100000,

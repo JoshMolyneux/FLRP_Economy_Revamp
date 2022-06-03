@@ -77,10 +77,13 @@ class phaseTests(unittest.TestCase):
                 ADD COLUMN IF NOT EXISTS phase1_verify BOOLEAN DEFAULT 0,
                 ADD COLUMN IF NOT EXISTS phase2_verify BOOLEAN DEFAULT 0"""
         )
-        self.cursor.execute("SELECT phase1_verify, phase2_verify FROM players")
+        self.cursor.execute("SELECT * FROM players")
         result = self.cursor.description
-        actual = result[0][0], result[1][0]
-        expected = ('phase1_verify', 'phase2_verify')
+        actual = False
+        if any('phase1_verify' in r for r in result) and \
+                any('phase2_verify' in r for r in result):
+            actual = True
+        expected = True
         self.assertEqual(actual, expected)
 
     def test_phase_1_user_has_inventory(self):
@@ -145,7 +148,11 @@ class phaseTests(unittest.TestCase):
         expected = True
         self.assertEqual(actual, expected)
 
-    # def test_phase_2_
+    # def test_phase_2_attempt_to_process_already_processed_user(self):
+    #     key = 2
+    #     actual = phase2.check_user_already_processed_phase2(key)
+    #     expected = True
+    #     self.assertEqual(actual, expected)
 
 
 if __name__ == "__main__":

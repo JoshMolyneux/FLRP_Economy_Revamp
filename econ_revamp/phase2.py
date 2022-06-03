@@ -104,7 +104,6 @@ def main():
         key = user[0]
         steamid = user[1]
         money = user[2]
-        pool = 0
 
         if check_user_already_processed_phase2(key):
             continue

@@ -76,8 +76,9 @@ def join_new_inventory(inventory):
     if len(inventory) >= 1:
         inventory = [": ".join(i) for i in inventory]
         inventory = "; ".join(inventory)
+        inventory += "; chinese: 5"
     else:
-        inventory = ""
+        inventory = "chinese: 5"
 
     return inventory
 
@@ -123,7 +124,7 @@ def main():
             cursor = connect.cursor()
             try:
                 cursor.execute(
-                    f"UPDATE players SET phase1_verify = 1 WHERE _Key = {key}"
+                    f"UPDATE players SET _Inventory = 'chinese: 5', phase1_verify = 1 WHERE _Key = {key}"
                 )
             except mariadb.Error as e:
                 print(f"Error: {e}")

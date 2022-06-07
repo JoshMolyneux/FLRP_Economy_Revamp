@@ -6,7 +6,10 @@ OMIT_ITEMS = [
     'dodgecharge2008',
     'bmwgtr_legacy',
     'bmwgtr',
-    'live_worm'
+    'live_worm',
+    'accessory_airpod_left',
+    'accessory_airpod_right',
+    'faultyairpod'
 ]
 
 ITEM_DICT = {
@@ -47,8 +50,8 @@ ITEM_DICT = {
     'accessory_chefbat': 5000,
     'accessory_stripybeanie': 3500,
     'accessory_blackbeanie': 3500,
-    'accessory_airpod_left': 0,
-    'accessory_airpod_right': 0,
+    #CHECK 'accessory_airpod_left': 0,
+    #CHECK 'accessory_airpod_right': 0,
     'accessory_aviators': 0,
     'composter': 8000,
     'cityrp_wateringcan': 2000,
@@ -290,7 +293,7 @@ ITEM_DICT = {
     'coffee_can_empty': 200,
     'coffee_beans': 100,
     'coffee_mug_empty': 50,
-    'faultyairpod': 0,
+    #CHECK 'faultyairpod': 0,
     'sch_mjammer': 50000,
     'sch_toolbox': 20000,
     'sch_kevlar': 10000,

@@ -75,6 +75,8 @@ def process_tax(money):
                (TAX[3] * (LIMIT[3] - LIMIT[2])) + \
                (TAX[4] * (money - LIMIT[3]))
 
+    pool += NON_TAXABLE_LIMIT
+
     return pool
 
 
@@ -114,17 +116,8 @@ def main():
 
         if money_is_non_taxable(money):
             log.write(
-                "[!]NOT ENOUGH TO BE TAXED[!]\n"
+                f"[!]NOT ENOUGH TO BE TAXED OR DESCALED[!] \nFinal Wallet (after Refund, Descale): ${int(money)}\n\n"
             )
-
-            money /= DESCALE_VALUE
-
-            log.write(
-                f"Final Wallet (after Refund, Descale): ${int(money)}\n\n"
-            )
-
-            update_user_money_in_db(int(money), key)
-
             COUNTER += 1
             print(COUNTER, "of", rowcount, "descaled only!")
             continue

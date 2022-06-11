@@ -121,7 +121,7 @@ class phaseTests(unittest.TestCase):
         inventory = phase1.join_new_inventory(new_inventory)
         actual = inventory
         print(actual)
-        expected = "bmwgtr: 1"
+        expected = "bmwgtr: 1; chinese: 5"
         self.assertEqual(actual, expected)
 
     def test_phase_1_update_user_in_db(self):
@@ -136,7 +136,7 @@ class phaseTests(unittest.TestCase):
         )
         self.cursor.execute("SELECT _Inventory, _Money FROM players WHERE _Key = 3")
         actual = self.cursor.fetchone()
-        expected = 'bmwgtr: 1'
+        expected = 'bmwgtr: 1; chinese: 5'
         self.assertEqual(actual[0], expected)
         expected = 52424323
         self.assertEqual(actual[1], expected)
@@ -148,11 +148,13 @@ class phaseTests(unittest.TestCase):
         expected = True
         self.assertEqual(actual, expected)
 
-    # def test_phase_2_attempt_to_process_already_processed_user(self):
-    #     key = 2
-    #     actual = phase2.check_user_already_processed_phase2(key)
-    #     expected = True
-    #     self.assertEqual(actual, expected)
+    def test_phase_2_process_tax_first_bracket_safe(self):
+        self.cursor.execute("SELECT _Money FROM players WHERE _Key = 6")
+        money = self.cursor.fetchone()[0]
+        actual = phase2.process_tax(money)
+        # ((749999 - 500000) * 0.45) + ((499999 - 200000) * 0.5) + 199999
+        expected = 462499
+        self.assertEqual(actual, expected)
 
 
 if __name__ == "__main__":

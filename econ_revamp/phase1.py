@@ -10,6 +10,7 @@ from . import get_all_players
 
 COUNTER = 0
 
+# Connect to our MariaDB database
 try:
     connect = mariadb.connect(
         **db_details,
@@ -21,6 +22,11 @@ except mariadb.Error as e:
 
 
 def check_user_already_processed_phase1(key):
+    """
+    A function to check if a user has already been processed through Phase 1.
+    We can return a boolean value and use it as a condition when processing a user.
+    """
+
     cursor = connect.cursor()
     try:
         cursor.execute(
@@ -40,10 +46,13 @@ def user_has_inventory(inventory):
 
 
 def convert_inventory_into_items(inventory):
-    # Dissect the inventory string into their own objects
+    """
+    A function that takes a block of text with a set format and dissects it into a list
+    of separate strings and their quantities.
+    """
+
     inv = inventory.split("; ")
-    # Found some strange entries that had a semi-colon after the value
-    # ... even though nothing followed it lol
+    # Found some strange entries that had a semi-colon after the value with no suffix
     inv = [i.replace(";", "") for i in inv]
     items = [i.split(": ", 2) for i in inv]
 
@@ -51,11 +60,14 @@ def convert_inventory_into_items(inventory):
 
 
 def refund_user(items, inventory):
+    """
+    A function to process the refund of a user dependant on the items in their inventory, their market value
+    and the quantity of that item the user has.
+    """
+    
     refund = 0
 
     for item in items:
-        # name = item[0]
-        # quantity = item[1]
         # Check the users items are in the dictionary and refund them
         if item[0] in ITEM_DICT.keys():
             refund += ITEM_DICT[item[0]] * float(item[1])
@@ -73,6 +85,11 @@ def refund_user(items, inventory):
 
 
 def join_new_inventory(inventory):
+    """
+    A function to rebuild the new inventory from our new list of items from OMIT_ITEMS depending 
+    on if the user had them. We also want to give them a default of 5 Chinese.
+    """
+
     if len(inventory) >= 1:
         inventory = [": ".join(i) for i in inventory]
         inventory = "; ".join(inventory)
@@ -84,6 +101,10 @@ def join_new_inventory(inventory):
 
 
 def update_user_money_inventory_in_db(money, inventory, key):
+    """
+    Update the user in the database with their new money and new inventory
+    """
+
     cursor = connect.cursor()
     try:
         cursor.execute(

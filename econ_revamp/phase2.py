@@ -22,6 +22,7 @@ NON_TAXABLE_LIMIT = 199999
 TAX = [0.5, 0.45, 0.4, 0.35, 0.3]
 LIMIT = [499999, 749999, 999999, 4999999]
 
+# Connect to our MariaDB database
 try:
     connect = mariadb.connect(
         **db_details,
@@ -33,6 +34,11 @@ except mariadb.Error as e:
 
 
 def check_user_already_processed_phase2(key):
+    """
+    A function to check if a user has already been processed through Phase 2.
+    We can return a boolean value and use it as a condition when processing a user.
+    """
+
     cursor = connect.cursor()
     try:
         cursor.execute(
@@ -52,6 +58,11 @@ def money_is_non_taxable(money):
 
 
 def process_tax(money):
+    """
+    A function to process a tax bracket decrease on a user's entire money value.
+    Variable tax is dependant on the amount of money a user has. The NON_TAXABLE_LIMIT
+    value is safe and won't be affected.
+    """
     pool = 0
 
     if money <= LIMIT[0]:
@@ -81,6 +92,8 @@ def process_tax(money):
 
 
 def update_user_money_in_db(money, key):
+    """Update the user in the database with their new money."""
+
     cursor = connect.cursor()
     try:
         cursor.execute(

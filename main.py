@@ -1,5 +1,5 @@
 """Automates queries sent to the database to complete the following:
-- PHASE 1 Refund all inventory items (except legacy) at 60% market value.
+- PHASE 1 Refund all inventory items (except legacy) at FIXED% market value.
 - PHASE 2 Decrease wallets using a tax bracket system as follows when the player has.
     - Up to $199,999: 0% Decrease
     - Between $200,000 and $499,999: 50% Decrease
@@ -7,7 +7,7 @@
     - Between $750,000 and $999,999: 60% Decrease
     - Between $1,000,000 and $4,999,999: 65% Decrease
     - $5,000,000 or more: 70% Decrease
-- PHASE 3 Descale wallets by a fixed number
+- PHASE 3 Descale wallets by a FIXED number
 
 Usage:
     ./main.py

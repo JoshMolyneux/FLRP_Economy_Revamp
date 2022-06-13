@@ -152,7 +152,8 @@ def main():
             cursor.close()
             log.write("[!]NO INVENTORY[!]\n\n")
             COUNTER += 1
-            print(COUNTER, "of", rowcount, "does not have an Inventory")
+            if COUNTER % 500 == 0:
+                print(COUNTER, "of", rowcount, "does not have an Inventory")
             continue
 
         items = convert_inventory_into_items(inventory)
@@ -177,6 +178,7 @@ def main():
 
         COUNTER += 1
         # Some visual feedback in console
-        print(COUNTER, "of", rowcount, "refunded!")
+        if COUNTER % 500 == 0:
+            print(COUNTER, "of", rowcount, "refunded!")
 
     print("\n[!]PHASE 1 REFUND SUCCESSFULLY EXECUTED[!]")

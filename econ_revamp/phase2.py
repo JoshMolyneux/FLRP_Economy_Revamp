@@ -133,7 +133,8 @@ def main():
                 f"[!]NOT ENOUGH TO BE TAXED OR DESCALED[!] \nFinal Wallet (after Refund, Descale): ${int(money)}\n\n"
             )
             COUNTER += 1
-            print(COUNTER, "of", rowcount, "descaled only!")
+            if COUNTER % 500 == 0:
+                print(COUNTER, "of", rowcount, "descaled only!")
             continue
 
         pool = process_tax(money)
@@ -154,7 +155,8 @@ def main():
 
         COUNTER += 1
 
-        # Some visual feedback in console
-        print(COUNTER, "of", rowcount, "taxed AND descaled!")
+        if COUNTER % 500 == 0:
+            # Some visual feedback in console
+            print(COUNTER, "of", rowcount, "taxed AND descaled!")
 
     print("\n[!]PHASE 2 TAX DEDUCTION SUCCESSFULLY EXECUTED[!]")

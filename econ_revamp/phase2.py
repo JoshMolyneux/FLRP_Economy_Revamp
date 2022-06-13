@@ -86,6 +86,7 @@ def process_tax(money):
                (TAX[3] * (LIMIT[3] - LIMIT[2])) + \
                (TAX[4] * (money - LIMIT[3]))
 
+    pool /= DESCALE_VALUE
     pool += NON_TAXABLE_LIMIT
 
     return pool
@@ -143,13 +144,13 @@ def main():
             f"Money Removed: ${money_removed}\nWallet (after tax): ${pool}\n"
         )
 
-        money = pool / DESCALE_VALUE
+        #  money = pool / DESCALE_VALUE
 
         log.write(
             f"Final Wallet (after Refund, Decrease, Descale): ${int(money)}\n\n"
         )
 
-        update_user_money_in_db(int(money), key)
+        update_user_money_in_db(int(pool), key)
 
         COUNTER += 1
 

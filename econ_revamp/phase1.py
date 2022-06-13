@@ -64,7 +64,7 @@ def refund_user(items, inventory):
     A function to process the refund of a user dependant on the items in their inventory, their market value
     and the quantity of that item the user has.
     """
-    
+
     refund = 0
 
     for item in items:
@@ -86,7 +86,7 @@ def refund_user(items, inventory):
 
 def join_new_inventory(inventory):
     """
-    A function to rebuild the new inventory from our new list of items from OMIT_ITEMS depending 
+    A function to rebuild the new inventory from our new list of items from OMIT_ITEMS depending
     on if the user had them. We also want to give them a default of 5 Chinese.
     """
 

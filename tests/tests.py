@@ -152,8 +152,8 @@ class phaseTests(unittest.TestCase):
         self.cursor.execute("SELECT _Money FROM players WHERE _Key = 6")
         money = self.cursor.fetchone()[0]
         actual = phase2.process_tax(money)
-        # ((749999 - 500000) * 0.45) + ((499999 - 200000) * 0.5) + 199999
-        expected = 462499
+        # ((749999 - 500000) * 0.45) + ((499999 - 200000) * 0.5)
+        expected = 287499
         self.assertEqual(actual, expected)
 
 

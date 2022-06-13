@@ -108,7 +108,7 @@ def update_user_money_inventory_in_db(money, inventory, key):
     cursor = connect.cursor()
     try:
         cursor.execute(
-            f"UPDATE players SET _Money = _Money + {money}, _Inventory = '{inventory}', phase1_verify = 1 WHERE _Key = {key}"
+            f"UPDATE players SET _Money = {money}, _Inventory = '{inventory}', phase1_verify = 1 WHERE _Key = {key}"
         )
     except mariadb.Error as e:
         print(f"Error: {e}")

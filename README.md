@@ -1,6 +1,7 @@
 # Economic Revamp Script
-<p>
+<p align='center'>
 <img src=https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue></img>
+<img src=https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white></img>
 </p>
 
 ### Prerequisites

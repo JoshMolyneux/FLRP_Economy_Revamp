@@ -19,22 +19,14 @@ Author:
 """
 
 from econ_revamp import phase1,\
-    phase2, get_total_money, set_inv_value_to_zero,\
+    phase2, set_inv_value_to_zero,\
     create_verification_db_columns
 
 
 if __name__ == '__main__':
     create_verification_db_columns()
-    total_start_cash = get_total_money()
     # Run our phases
     phase1.main()
     phase2.main()
-    total_end_cash = get_total_money()
     set_inv_value_to_zero()
-
-    # Print the total sum of money to the console
-    total = int(total_start_cash[0]) - int(total_end_cash[0])
-    print(f"\n Total money BEFORE: ${int(total_start_cash[0])}")
-    print(f"\n Total money AFTER: ${int(total_end_cash[0])}")
-    print(f"\n Total money removed: ${total}")
     input()

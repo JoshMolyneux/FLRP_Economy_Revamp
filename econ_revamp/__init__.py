@@ -57,19 +57,6 @@ def get_all_players(params, test=False):
     return result, rowcount
 
 
-def get_total_money():
-    cursor = connect().cursor()
-    try:
-        cursor.execute("SELECT SUM(_Money) FROM players")
-        # Store all the results in a variable
-        total = cursor.fetchone()
-    except mariadb.Error as e:
-        print(f"Error getting SUM value: {e}")
-    cursor.close()
-
-    return total
-
-
 def set_inv_value_to_zero():
     # Set all Inventory values to ZERO
     cursor = connect().cursor()

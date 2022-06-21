@@ -25,7 +25,7 @@ When running the script, DO NOT open the log files during execution as data will
 
 ### PHASE 1
 
-Refund all inventory items (except legacy) at 60% market value.
+Refund all inventory items (except legacy) at a fixed percentage of market value
 
 ### PHASE 2
 

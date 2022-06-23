@@ -9,7 +9,8 @@ OMIT_ITEMS = [
     'live_worm',
     'accessory_airpod_left',
     'accessory_airpod_right',
-    'faultyairpod'
+    'faultyairpod',
+    'tides'
 ]
 
 ITEM_DICT = {
@@ -327,7 +328,7 @@ ITEM_DICT = {
     'scania': 375000,
     'kenworth': 300000,
     'sprinteropenchassis': 145000,
-    'tides': 125000,
+    #CHECK 'tides': 125000,
     'flatbedtdm': 50000,
     'logtrailer': 50000,
     'reefer': 50000,

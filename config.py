@@ -3,10 +3,10 @@ DESCALE_VALUE = 3
 
 # MariaDB Database Details - CHANGE WHERE NECCESSARY
 db_details = {
-    'host': 'localhost',
+    'host': '127.0.0.1',
     'user': 'root',
-    'password': '',
-    'database': 'fearless_cityrp'
+    'password': 'password',
+    'database': 'fearless_test'
 }
 
 test_db_details = {

@@ -19,7 +19,7 @@ from config import db_details, DESCALE_VALUE
 COUNTER = 0
 
 NON_TAXABLE_LIMIT = 199999
-TAX = [0.5, 0.45, 0.4, 0.35, 0.3]
+TAX = [0.5, 0.45, 0.4, 0.3, 0.2]
 LIMIT = [499999, 749999, 999999, 4999999]
 
 # Connect to our MariaDB database
@@ -92,13 +92,28 @@ def process_tax(money):
     return pool
 
 
-def update_user_money_in_db(money, key):
+def update_user_money_in_db(money, key, oldmoney):
     """Update the user in the database with their new money."""
+
+    # also we're going to handle the special items here with the oldmoney variable
+
+    bounds = {
+        200000: "legacy_hat_green: 1; ", 
+        500000: "legacy_hat_red: 1; ", 
+        750000: "legacy_hat_purple: 1; ",
+        1000000: "legacy_hat_silver: 1; ",
+        5000000: "legacy_hat_gold: 1; "
+    }
+
+    invString = ""
+    for bound, string in bounds.items():
+        if oldmoney > int(bound):
+            invString += string
 
     cursor = connect.cursor()
     try:
         cursor.execute(
-            f"UPDATE players SET _Money = {money}, phase2_verify = 1 WHERE _Key = {key}"
+            f"UPDATE players SET _Inventory = CONCAT('{invString}', _Inventory), _Money = {money}, phase2_verify = 1 WHERE _Key = {key}"
         )
     except mariadb.Error as e:
         print(f"Error: {e}")
@@ -151,7 +166,9 @@ def main():
             f"Final Wallet (after Refund, Decrease, Descale): ${int(money)}\n\n"
         )
 
-        update_user_money_in_db(int(pool), key)
+        # add hats in this function
+
+        update_user_money_in_db(int(pool), key, money)
 
         COUNTER += 1
 
